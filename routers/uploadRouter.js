@@ -2,13 +2,12 @@ import express from 'express';
 import multer from 'multer';
 import multerS3 from 'multer-s3';
 import aws from 'aws-sdk';
-import config from '../config.js';
 import { v4 as uuidv4 } from 'uuid';
 
 const s3 = new aws.S3({
-  accessKeyId: config.ACCESS_KEY_ID,
-  secretAccessKey: config.SECRET_ACCESS_KEY,
-  region: config.AWS_REGION,
+  accessKeyId: process.env.ACCESS_KEY_ID,
+  secretAccessKey: process.env.SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
 });
 
 const storage = multer.memoryStorage({
@@ -27,7 +26,7 @@ uploadrouter.post('/s3', upload, (req, res) => {
   console.log(req.file);
 
   const params = {
-    Bucket: config.AWS_BUCKET,
+    Bucket: process.env.AWS_BUCKET,
     Acl: 'public-read',
     Key: `${uuidv4()}.${filetype}`,
     Body: req.file.buffer,
